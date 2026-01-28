@@ -1,50 +1,29 @@
-from flask import Flask, request, make_response
+from flask import Flask, render_template, redirect, url_for
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 
 @app.route('/')
 def index():
-    return "Hello World!"
+    my_value = 20
+    my_result = my_value * 2
+    return render_template('index.html', value=my_value, result=my_result)
 
-@app.route('/hello', methods=['GET', 'POST'])
-def hello():
-    if request.method == 'GET':
-        return "<h1>You made a GET request! </h1>"
-    elif request.method == 'POST':
-        return "<h1>You made a POST request! </h1>"
-    else:
-        return "<h1>You won't ever access it! </h1>"
+@app.route('/about')
+def about():
+    some_text = "Hello World"
+    return render_template('about.html', text=some_text)
 
-@app.route('/hi')
-def hi():
-    return "<h1>Hi World! </h1>", 200
+@app.route('/redirect_endpoint')
+def redirect_endpoint():
+    return redirect(url_for('about'))
 
-@app.route('/fox')
-def fox():
-    response = make_response('Hello World!')
-    response.status_code = 200
-    response.headers['Content-Type'] = 'application/js'
-    return response
+@app.template_filter('reverse_string')
+def reverse_string(text):
+    return text[::-1]
 
-
-@app.route('/hello/<name>')
-def greet(name):
-    return "<h1>Hello %s</h1>" % name
-
-@app.route('/add/<int:number1>/<int:number2>')
-def add(number1, number2):
-    return f"{number1} + {number2} =  {number1 + number2}"
-
-@app.route('/handle_url_params')
-def handle_params():
-    if 'name' in request.args.keys():
-        name = request.args[
-            "name"]  # If this is not provided it will return error
-        greeting = request.args.get(
-            "greeting")  # If not provided, returns None
-        return f"{greeting} {name}"
-    else:
-        return "Some parameter is missing"
+@app.template_filter('repeat_string')
+def repeat_string(text, count=2):
+    return (text+" ")*count
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
