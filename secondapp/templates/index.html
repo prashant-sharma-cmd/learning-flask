@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Index Page
+{% endblock %}
+
+{% block content %}
+
+<h1>Login Page</h1>
+<form method="post" action="{{ url_for('index') }}">
+    <input type="text" name="username" placeholder="Username"> <br>
+    <input type="password" name="password" placeholder="Password"> <br>
+    <input type="submit" value="Login">
+</form>
+
+<h1>File Upload!!</h1>
+<form method="post" action="{{ url_for('file_upload') }}" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/plain" required="required"><br>
+    <input type="submit" value="Upload File">
+</form>
+
+<h1>Convert to CSV!!</h1>
+<form method="post" action="{{ url_for('convert_csv') }}" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required="required"><br>
+    <input type="submit" value="Upload File">
+</form>
+
+<h1>Convert to CSV Again!!</h1>
+<form method="post" action="{{ url_for('convert_csv_two') }}" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" required="required"><br>
+    <input type="submit" value="Upload File">
+</form>
+
+<h1>JavaScript JSON Request!!</h1>
+<button id="post_button"> Send POST Request</button>
+
+<script type="text/javascript">
+    const post_button = document.getElementById("post_button");
+
+    const jsonData= {name: 'Mike', greeting: 'Hello'}
+
+    post_button.addEventListener('click', () => {
+        fetch('{{ url_for("handle_post") }}', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json; charset = utf-8'
+        },
+        body: JSON.stringify(jsonData)
+    })
+        .then(response => response.json())
+        .then(data => console.log('Success:', data))
+        .catch((error) => {
+            console.error('Failure:', error)
+            });
+    });
+</script>
+
+{% endblock %}
